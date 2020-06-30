@@ -1,0 +1,11 @@
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\bin\Release\ChannergyTasks.exe.config
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\bin\Release\ChannergyTasks.exe
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\bin\Release\ChannergyTasks.pdb
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\bin\Release\ChannergyTasks.xml
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.vbprojAssemblyReference.cache
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.Resources.resources
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.vbproj.GenerateResource.cache
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.vbproj.CoreCompileInputs.cache
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.exe
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.xml
+C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Release\ChannergyTasks.pdb
