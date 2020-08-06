@@ -9,3 +9,14 @@ C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\bin\Debug\Cha
 C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Debug\ChannergyTasks.exe
 C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Debug\ChannergyTasks.xml
 C:\Users\msore\Google Drive\Projects\ChannergyTasks\ChannergyTasks\obj\Debug\ChannergyTasks.pdb
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\bin\Debug\ChannergyTasks.exe.config
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\bin\Debug\ChannergyTasks.exe
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\bin\Debug\ChannergyTasks.pdb
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\bin\Debug\ChannergyTasks.xml
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.vbprojAssemblyReference.cache
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.Resources.resources
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.vbproj.GenerateResource.cache
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.vbproj.CoreCompileInputs.cache
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.exe
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.xml
+C:\Users\msore\Google Drive\Projects\mlarsen\ChannergyTask\ChannergyTasks\obj\Debug\ChannergyTasks.pdb

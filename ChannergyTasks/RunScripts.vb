@@ -123,15 +123,17 @@ Module RunScripts
     Sub UpdateTimeStamp(ByRef stScriptName As String)
         Dim stSQL As String
         Dim stFrequency As String
+        Dim stScheduledTime As String
 
         'Update the last run timestamp
         stSQL = "UPDATE ChannergyScripts SET LastRun=CURRENT_TIMESTAMP WHERE ScriptName='" + stScriptName + "';"
         SQLTextQuery("U", stSQL, stODBCString)
 
-        'Get the frequency
-        stSQL = "SELECT Frequency FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
-        SQLTextQuery("S", stSQL, stODBCString, 1)
-        stFrequency = sqlarray(0)
+        'Get the frequency and time
+        stSQL = "SELECT Frequency,Time FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
+        SQLTextQuery("S", stSQL, stODBCString, 2)
+        stFrequency = sqlArray(0)
+        stScheduledTime = sqlArray(1)
 
         If stFrequency = "Daily" Then
             stSQL = "UPDATE ChannergyScripts SET NextScheduled=LastRun+24*3600*1000 WHERE ScriptName='" + stScriptName + "';"

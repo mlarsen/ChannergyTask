@@ -125,7 +125,11 @@ Module CoreFunctions
                 SQL1.Dispose()
 
             Catch ex As Exception
-                Console.WriteLine("SQL2 Exception Message: " & ex.Message)
+                Console.WriteLine("SQL1 Exception Message: " & ex.Message)
+                Console.WriteLine("SQL Code: " + CommandText)
+                AppendScriptLog(stScriptName, "SQL Error",, True, ex.Message)
+                AppendScriptLog(stScriptName, "SQL Code",, True, CommandText)
+
                 bolIsError = True
             End Try
         End If
@@ -143,6 +147,9 @@ Module CoreFunctions
 
             Catch ex As Exception
                 Console.WriteLine("SQL2 Exception Message: " & ex.Message)
+                Console.WriteLine("SQL Code: " + CommandText)
+                AppendScriptLog(stScriptName, "SQL Error",, True, ex.Message)
+                AppendScriptLog(stScriptName, "SQL Code",, True, CommandText)
                 bolIsError = True
             End Try
         End If

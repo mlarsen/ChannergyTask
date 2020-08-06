@@ -8,7 +8,7 @@ Imports System.Timers
 Imports System.Threading
 
 Module Module1
-    'Public stPath As String = "E:\Core\HeltonTools\Test"
+    'Public stPath As String = "E:\Core\HeltonTools\2020"
     Public stPath As String = System.AppDomain.CurrentDomain.BaseDirectory()
     Public stImportTableName As String
     Public stImportFolderPath As String
@@ -95,7 +95,7 @@ Module Module1
                         tSendDate = convDateStamp(stScriptName, "NextScheduled")
                     End If
 
-                    tSendTime = convTimeStamp(stScriptName, "NextScheduled")
+                    tSendTime = convTime(stScriptName, "Time")
                     If stNextScheduled = "" And tTime > tSendTime Then 'run the script now
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
 
@@ -189,6 +189,21 @@ Module Module1
                 tTime = TimeSpan.Parse(sqlarray(0))
             End If
         End If
+
+
+        Return tTime
+    End Function
+    Function convTime(ByRef stScriptName As String, ByRef stFieldName As String) As TimeSpan
+        Dim stSQL As String
+        Dim tTime As TimeSpan
+
+
+        stSQL = "SELECT Time FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
+        SQLTextQuery("S", stSQL, stODBCString, 1)
+        If sqlArray(0) <> ":" Then
+            tTime = TimeSpan.Parse(sqlArray(0))
+        End If
+
 
 
         Return tTime
