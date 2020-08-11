@@ -33,6 +33,8 @@ Module Module1
         Dim iMCMVersion As Integer
         Dim iTotalMinutes As Integer
         Dim iTotalHours As Integer
+        Dim stInstalledVersion As String = Reflection.Assembly.GetExecutingAssembly.GetName.Version.Major.ToString + "." + Reflection.Assembly.GetExecutingAssembly.GetName.Version.Minor.ToString + "." + Reflection.Assembly.GetExecutingAssembly.GetName.Version.Build.ToString + "." + Reflection.Assembly.GetExecutingAssembly.GetName.Version.Revision.ToString
+
 
         'Make sure that the stPath is formatted correctly
         If Right(stPath, 1) <> "\" Then
@@ -48,9 +50,12 @@ Module Module1
         'Get the connection string
         stODBCString = CoreFunctions.GetDSN(stPath)
 
-
+        'Code added 08/11/2020: Create ChannergyServiceUpdate table if it does not exist
+        CreateTables()
 
         Do While True
+
+
             Dim con As New OdbcConnection(stODBCString)
             Dim da As New OdbcDataAdapter("SELECT * FROM ChannergyScripts WHERE IsActive=True;", con)
             Dim ds As New DataSet()
@@ -61,6 +66,23 @@ Module Module1
             stDayofMonth = DateAndTime.Day(Today)
             tTime = TimeSpan.Parse(DateTime.Now.ToString("HH:mm"))
             tDate = Today.ToString("MM/dd/yyyy")
+
+            'Code added 08/11/2020: Check to see if the service has been checked for updates today
+            If CheckLast("ChannergyTasks", tDate) = False Then 'See if there are any updates
+                If IsNewVersion("ChannergyTasks", stInstalledVersion) = True Then
+                    If My.Computer.FileSystem.FileExists(stPath + "UpdateService.exe") = False Then
+                        DownloadApplicationFiles("UpdateService", stPath)
+                    End If
+
+                    Dim startInfo = New ProcessStartInfo(stPath + "UpdateService.exe")
+                    startInfo.WindowStyle = ProcessWindowStyle.Normal
+                    startInfo.Arguments = Chr(34) + "ChannergyTasks" + Chr(34)
+                    startInfo.UseShellExecute = False
+                    System.Diagnostics.Process.Start(startInfo)
+
+                End If
+            End If
+
 
             'Loop through the tables and see if we have any to send during this time
             For Each dr In ds.Tables("RunScripts").Rows
@@ -208,15 +230,15 @@ Module Module1
 
         Return tTime
     End Function
-    Function convDateStamp(ByRef stScriptName As String, ByRef stFieldName As String) As Date
+    Function convDateStamp(ByRef stSearchValue As String, ByRef stDateFieldName As String, Optional ByRef stTableName As String = "ChannergyScripts", Optional ByRef stFieldName As String = "ScriptName") As Date
         Dim stSQL As String
         Dim tDate As Date
 
-        stSQL = "SELECT CAST(EXTRACT(MONTH FROM " + stFieldName + ") AS VARCHAR(2))+'/'+CAST(EXTRACT(DAY FROM " + stFieldName + ") AS VARCHAR(2))+'/'+CAST(EXTRACT(YEAR FROM " + stFieldName + ") AS VARCHAR(4)) FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
+        stSQL = "SELECT CAST(EXTRACT(MONTH FROM " + stDateFieldName + ") AS VARCHAR(2))+'/'+CAST(EXTRACT(DAY FROM " + stDateFieldName + ") AS VARCHAR(2))+'/'+CAST(EXTRACT(YEAR FROM " + stDateFieldName + ") AS VARCHAR(4)) FROM " + stTableName + " WHERE " + stFieldName + "='" + stSearchValue + "';"
         SQLTextQuery("S", stSQL, stODBCString, 1)
 
-        If sqlarray(0) <> "" Then
-            tDate = Date.Parse(sqlarray(0))
+        If sqlArray(0) <> "" Then
+            tDate = Date.Parse(sqlArray(0))
         End If
 
 
@@ -253,4 +275,36 @@ Module Module1
             ChannergyStartMCM.Main()
         End If
     End Sub
+    Sub CreateTables()
+        Dim stSQL As String
+
+        stSQL = "CREATE TABLE IF NOT EXISTS ChannergyServiceUpdate("
+        stSQL = stSQL + "ServiceName VARCHAR(30),"
+        stSQL = stSQL + "LastChecked DATE DEFAULT CURRENT_DATE);"
+
+        SQLTextQuery("U", stSQL, stODBCString, 0)
+    End Sub
+    Function CheckLast(ByRef stApplication As String, ByRef tDate As Date) As Boolean
+        Dim stSQL As String = "SELECT ServiceName,LastChecked FROM ChannergyServiceUpdate;"
+
+        SQLTextQuery("S", stSQL, stODBCString, 2)
+
+        If sqlArray(0) = "NoData" Or sqlArray(0) = "" Then 'The table has not been populated yet
+            stSQL = "INSERT INTO ChannergyServiceUpdate(ServiceName) VALUES('" + stApplication + "');"
+            SQLTextQuery("U", stSQL, stODBCString, 0)
+            Return False
+        ElseIf convDateStamp(stApplication, "LastChecked", "ChannergyServiceUpdate", "ServiceName") = tDate Then
+            Return True
+        ElseIf convDateStamp(stApplication, "LastChecked", "ChannergyServiceUpdate", "ServiceName") < tDate Then
+            'Update the LastChecked field
+            stSQL = "UPDATE ChannergyServiceUpdate SET LastChecked=CURRENT_DATE WHERE ServiceName='" + stApplication + "';"
+            SQLTextQuery("U", stSQL, stODBCString, 0)
+
+            Return False
+        Else
+            Return True
+        End If
+
+
+    End Function
 End Module

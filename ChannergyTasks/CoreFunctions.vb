@@ -12,9 +12,116 @@ Module CoreFunctions
     Public bolIsClientServer As Boolean = False
     Public stODBCString As String
     Public sqlArray(10) As String
+    Public stFTPUser As String = "update@core-tech.com"
+    Public stFTPPass As String = "v0wPZfEYH5291aC&lw8AuU^&HGF"
+    Public stFTPRequestRoot As String = "ftp://ftp.core-tech.com/updates/"
+    Public stApplictionFolder As String
     Sub main()
 
     End Sub
+    Function DownloadApplicationFiles(ByRef stFTPFolder As String, ByRef stApplicationPath As String) As Boolean
+        Dim stFTPPath As String = stFTPRequestRoot + "/" + stFTPFolder
+        Dim ftp = FtpWebRequest.Create(stFTPPath)
+        Dim stFileName As String
+        Try
+
+            ftp.Credentials = New NetworkCredential(stFTPUser, stFTPPass)
+            ftp.Method = WebRequestMethods.Ftp.ListDirectory
+
+            Dim response As FtpWebResponse = DirectCast(ftp.GetResponse(), FtpWebResponse)
+            Dim streamReader As New StreamReader(response.GetResponseStream())
+            Dim directories As New List(Of String)()
+
+            Dim line As String = streamReader.ReadLine()
+            While Not String.IsNullOrEmpty(line)
+                directories.Add(line)
+                line = streamReader.ReadLine()
+            End While
+            streamReader.Close()
+
+            Using ftpClient As New WebClient()
+                ftpClient.Credentials = New NetworkCredential(stFTPUser, stFTPPass)
+
+                For i = 2 To directories.Count - 1
+                    If directories(i).Contains(".") Then
+                        stFileName = directories(i).ToString
+                        Dim path As String = stFTPPath + "/" + stFileName
+                        If stFileName = "ChangeLog.txt" Then
+                            stFileName = stFTPFolder + "-" + stFileName
+                        End If
+                        Dim stSavePath = stApplicationPath + stFileName
+                        ftpClient.DownloadFile(path, stSavePath)
+                    End If
+                Next
+            End Using
+            Return False
+        Catch ex As Exception
+            Console.WriteLine("Download Applications:" + ex.Message)
+            Return True
+        End Try
+
+    End Function
+    Function IsNewVersion(ByRef stApplication As String, ByRef stInstalledVersion As String) As Boolean
+        Dim stFTPVersion As String = GetFTPtxtVersion(stApplication)
+        Dim stFtp() As String = Strings.Split(stFTPVersion, ".")
+        Dim stInstalled() As String = Strings.Split(stInstalledVersion, ".")
+        Dim i As Integer
+        Dim bolIsNewer As Boolean = False
+
+        'Code added 05/07/202: Check to see if the FTP version is valid.  If not return a bolIsNewer as false
+        If stFTPVersion IsNot Nothing Then
+
+            For i = 0 To stFtp.Length - 1
+                If i = 0 Then
+                    If CInt(stFtp(i)) > CInt(stInstalled(i)) Then
+                        bolIsNewer = True
+                        Exit For
+                    End If
+                Else
+
+                    If CInt(stFtp(i)) > CInt(stInstalled(i)) And CInt(stFtp(i - 1)) = CInt(stInstalled(i - 1)) Then
+                        bolIsNewer = True
+                        Exit For
+                    Else
+                        bolIsNewer = False
+                    End If
+                End If
+
+            Next
+        End If
+        Return bolIsNewer
+    End Function
+    Function GetFTPtxtVersion(ByRef stApplicationFolder As String) As String
+        Dim stVersion As String
+        Dim line As String
+        Dim iFirstline As Integer = 1
+        Dim stVersionstring() As String
+
+        Try
+            Dim ftp = FtpWebRequest.Create(stFTPRequestRoot + stApplicationFolder + "/ChangeLog.txt")
+
+
+            ftp.Credentials = New NetworkCredential(stFTPUser, stFTPPass)
+            ftp.Method = WebRequestMethods.Ftp.DownloadFile
+
+            Using response = CType(ftp.GetResponse, System.Net.FtpWebResponse)
+                Using responseStream As System.IO.Stream = response.GetResponseStream
+                    Dim sr As New System.IO.StreamReader(responseStream)
+                    While Not sr.EndOfStream
+                        line = sr.ReadLine
+                        If line.Contains("Version: ") Then
+                            stVersionstring = line.Split(":")
+                            stVersion = stVersionstring(1)
+                        End If
+                    End While
+
+                End Using
+            End Using
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
+        Return stVersion
+    End Function
     Sub LoadDataGridViewSQL(ByRef stSQL As String, ByRef GV As System.Windows.Forms.DataGridView)
 
 
