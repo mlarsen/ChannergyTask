@@ -285,7 +285,7 @@ Module Module1
         SQLTextQuery("U", stSQL, stODBCString, 0)
     End Sub
     Function CheckLast(ByRef stApplication As String, ByRef tDate As Date) As Boolean
-        Dim stSQL As String = "SELECT ServiceName,LastChecked FROM ChannergyServiceUpdate;"
+        Dim stSQL As String = "SELECT ServiceName,LastChecked FROM ChannergyServiceUpdate WHERE ServiceName='" + stApplication + "';"
 
         SQLTextQuery("S", stSQL, stODBCString, 2)
 
