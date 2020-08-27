@@ -126,6 +126,7 @@ Module ChannergyStopMCM
         Dim stChannelNo As String
         Dim LastRecord As String
         Dim stStatus As String
+        Dim stTempStatus As String
 
         da = New OdbcDataAdapter(stSQL, con)
         da.Fill(dt)
@@ -140,15 +141,21 @@ Module ChannergyStopMCM
                 CoreFunctions.SQLTextQuery("S", stSQL, stODBCstring, 1)
                 LastRecord = CoreFunctions.sqlArray(0)
 
-                'Get the status of the last record
-                stSQL = "SELECT Status FROM ChannelLog WHERE ChannelLogNo=" + LastRecord + ";"
-                CoreFunctions.SQLTextQuery("S", stSQL, stODBCstring, 1)
+                If LastRecord = "" Then 'There was no record for the channel account.
+                    stTempStatus = "Paused"
+                Else
+                    'Get the status of the last record
+                    stSQL = "SELECT Status FROM ChannelLog WHERE ChannelLogNo=" + LastRecord + ";"
+                    CoreFunctions.SQLTextQuery("S", stSQL, stODBCstring, 1)
+                    stTempStatus = CoreFunctions.sqlArray(0)
+                End If
+
 
                 If i = 0 Then
-                    stStatus = CoreFunctions.sqlArray(0)
+                    stStatus = stTempStatus
                 Else
-                    If CoreFunctions.sqlArray(0) <> stStatus Then
-                        stStatus = CoreFunctions.sqlArray(0)
+                    If stTempStatus <> stStatus Then
+                        stStatus = stTempStatus
                     End If
                 End If
 
