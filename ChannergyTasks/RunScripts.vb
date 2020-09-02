@@ -110,6 +110,7 @@ Module RunScripts
         Dim stSQL As String
         Dim procExecuting As New Process
 
+        AppendScriptLog(stScriptName, "Begin")
         'Get the ExeFilePath from the ScriptEntry table
         stSQL = "SELECT ExeFilePath FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
 
@@ -119,6 +120,7 @@ Module RunScripts
         procExecuting = Process.Start(stCommand)
         procExecuting.WaitForExit()
 
+        AppendScriptLog(stScriptName, "Complete")
     End Sub
     Sub UpdateTimeStamp(ByRef stScriptName As String)
         Dim stSQL As String
