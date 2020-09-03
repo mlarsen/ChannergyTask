@@ -70,9 +70,9 @@ Module Module1
             'Code added 08/11/2020: Check to see if the service has been checked for updates today
             If CheckLast("ChannergyTasks", tDate) = False Then 'See if there are any updates
                 If IsNewVersion("ChannergyTasks", stInstalledVersion) = True Then
-                    If My.Computer.FileSystem.FileExists(stPath + "UpdateService.exe") = False Then
-                        DownloadApplicationFiles("UpdateService", stPath)
-                    End If
+                    'If My.Computer.FileSystem.FileExists(stPath + "UpdateService.exe") = False Then
+                    DownloadApplicationFiles("UpdateService", stPath)
+                    'End If
 
                     Dim startInfo = New ProcessStartInfo(stPath + "UpdateService.exe")
                     startInfo.WindowStyle = ProcessWindowStyle.Normal

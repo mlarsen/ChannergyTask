@@ -110,7 +110,6 @@ Module RunScripts
         Dim stSQL As String
         Dim procExecuting As New Process
 
-        AppendScriptLog(stScriptName, "Begin")
         'Get the ExeFilePath from the ScriptEntry table
         stSQL = "SELECT ExeFilePath FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
 
@@ -120,7 +119,6 @@ Module RunScripts
         procExecuting = Process.Start(stCommand)
         procExecuting.WaitForExit()
 
-        AppendScriptLog(stScriptName, "Complete")
     End Sub
     Sub UpdateTimeStamp(ByRef stScriptName As String)
         Dim stSQL As String
@@ -225,7 +223,7 @@ Module RunScripts
     Sub AppendScriptLog(ByVal stScriptName As String, ByVal stStatus As String, Optional ByVal stService As String = "", Optional ByVal isError As Boolean = False, Optional ByVal stErrorMsg As String = "")
         Dim CRLF As String = Chr(13) + Chr(10)
         Dim con As New OdbcConnection(stODBCString)
-        Dim da As New OdbcDataAdapter("SELECT ScriptName,SErvice,Status,IsError,ErrorMessage FROM ScriptLog;", con)
+        Dim da As New OdbcDataAdapter("SELECT ScriptName,Service,Status,IsError,ErrorMessage FROM ScriptLog;", con)
         Dim ds As New DataSet
         Dim dt As DataTable
         Dim cmd As OdbcCommandBuilder = New OdbcCommandBuilder(da)
