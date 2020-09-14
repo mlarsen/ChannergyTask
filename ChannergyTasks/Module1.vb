@@ -8,7 +8,7 @@ Imports System.Timers
 Imports System.Threading
 
 Module Module1
-    'Public stPath As String = "E:\Core\AlwaysInTouch\Data"
+    'Public stPath As String = "E:\Core\HeltonTools\2020"
     Public stPath As String = System.AppDomain.CurrentDomain.BaseDirectory()
     Public stImportTableName As String
     Public stImportFolderPath As String
@@ -21,7 +21,7 @@ Module Module1
         Dim stDay As String
         Dim stDayofMonth As String
         Dim tSendTime As TimeSpan
-        Dim tTime
+        Dim tTime As TimeSpan
         Dim tTimeDiff As TimeSpan
         Dim tLastRun As TimeSpan
         Dim cmd As OdbcCommandBuilder
@@ -57,7 +57,7 @@ Module Module1
 
 
             Dim con As New OdbcConnection(stODBCString)
-            Dim da As New OdbcDataAdapter("SELECT * FROM ChannergyScripts WHERE IsActive=True;", con)
+            Dim da As New OdbcDataAdapter("SELECT *,CAST((CURRENT_TIMESTAMP-IF(LastRun=NULL,CURRENT_TIMESTAMP,LastRun))/(1000*60*60) AS INTEGER) AS Hours  FROM ChannergyScripts WHERE IsActive=True;", con)
             Dim ds As New DataSet()
             da.Fill(ds, "RunScripts")
 
@@ -94,6 +94,7 @@ Module Module1
                 stImportFolderPath = dr.item("ImportFolderPath").ToString
                 stImportFileFilter = dr.item("ImportFileExtension").ToString
                 stExeFilePath = dr.item("ExeFilePath").ToString
+                iTotalHours = CInt(dr.item("Hours").ToString)
 
                 'If stLastRun <> "Never" Then
                 '    tLastrun = TimeSpan.Parse(stLastRun)
@@ -103,25 +104,24 @@ Module Module1
                 'If stNextScheduled <> "" Then
                 '    'Get the send time
                 '    tSendTime = TimeSpan.Parse(dr.item("NextScheduled").ToString("MM/dd/yyyy HH:mm:ss tt"))
-                '    tSendDate = Date.Parse(dr.item("NextScheduled").ToString("MM/dd/yyyy"))
                 'End If
 
                 Console.WriteLine("Current Time:" + stDay + " " + tTime.ToString + " " + stScriptName + "," + stFrequency + "," + stNextScheduled)
 
 
                 If stFrequency = "Daily" Then
+                    tSendTime = convTime(stScriptName, "Time")
                     tTimeDiff = (tTime - tSendTime)
-                    iTotalHours = Math.Abs(tTimeDiff.TotalHours)
+
 
                     If stNextScheduled <> "" Then
                         tSendDate = convDateStamp(stScriptName, "NextScheduled")
                     End If
 
-                    tSendTime = convTime(stScriptName, "Time")
                     If stNextScheduled = "" And tTime > tSendTime Then 'run the script now
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
 
-                    ElseIf (tDate >= tSendDate And tTime >= tSendTime) Or iTotalHours > 24 Then
+                    ElseIf (tDate >= tSendDate And tTime >= tSendTime) Or iTotalHours >= 24 Then
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
                     End If
 
