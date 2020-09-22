@@ -120,7 +120,7 @@ Module Module1
 
                     If stNextScheduled = "" And tTime >= tSendTime Then 'run the script now
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
-                    ElseIf (tDate = tSendDate And tTime >= tSendTime) Or (iTotalHours >= 24 And iTotalHours <= 30) Then
+                    ElseIf (tDate = tSendDate And tTime >= tSendTime) Or (iTotalHours >= 24 And iTotalHours <= 25) Then
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
                     End If
 
