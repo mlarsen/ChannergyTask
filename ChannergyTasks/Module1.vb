@@ -34,12 +34,28 @@ Module Module1
         Dim iTotalMinutes As Integer
         Dim iTotalHours As Integer
         Dim stInstalledVersion As String = Reflection.Assembly.GetExecutingAssembly.GetName.Version.Major.ToString + "." + Reflection.Assembly.GetExecutingAssembly.GetName.Version.Minor.ToString + "." + Reflection.Assembly.GetExecutingAssembly.GetName.Version.Build.ToString + "." + Reflection.Assembly.GetExecutingAssembly.GetName.Version.Revision.ToString
+        Dim clArgs() As String = Environment.GetCommandLineArgs
+        Dim bolDebug As Boolean = False
 
+        If clArgs.Length = 2 Then
+            If Strings.UCase(clArgs(1)) = "DEBUG" Then
+                bolDebug = True
+            End If
+
+        End If
 
         'Make sure that the stPath is formatted correctly
         If Right(stPath, 1) <> "\" Then
             stPath = stPath + "\"
         End If
+
+
+        'For testing purposes
+
+        Dim stLogFile As String = stPath + "ChannergyTasks.txt"
+            Dim file As System.IO.StreamWriter
+
+
 
         iMCMVersion = GetMCMVersion(stPath)
         If iMCMVersion < 1909 Then
@@ -54,6 +70,9 @@ Module Module1
         CreateTables()
 
         Do While True
+            If bolDebug = True Then
+                file = My.Computer.FileSystem.OpenTextFileWriter(stLogFile, True)
+            End If
 
 
             Dim con As New OdbcConnection(stODBCString)
@@ -106,7 +125,12 @@ Module Module1
                 '    tSendTime = TimeSpan.Parse(dr.item("NextScheduled").ToString("MM/dd/yyyy HH:mm:ss tt"))
                 'End If
 
-                Console.WriteLine("Current Time:" + stDay + " " + tTime.ToString + " " + stScriptName + "," + stFrequency + "," + stNextScheduled)
+                Console.WriteLine("Current Time:" + stDay + " " + tTime.ToString + " " + stScriptName + "," + stFrequency + ", NextScheduled:" + stNextScheduled)
+
+                'For testing
+                If bolDebug = True Then
+                    file.WriteLine("Current Time:" + stDay + " " + tTime.ToString + " " + stScriptName + "," + stFrequency + ", NextScheduled:" + stNextScheduled)
+                End If
 
 
                 If stFrequency = "Daily" Then
@@ -119,8 +143,16 @@ Module Module1
                     End If
 
                     If stNextScheduled = "" And tTime >= tSendTime Then 'run the script now
+                        If bolDebug = True Then
+                            file.WriteLine("Running " + stScriptName)
+                        End If
+
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
                     ElseIf (tDate = tSendDate And tTime >= tSendTime) Or (iTotalHours >= 24 And iTotalHours <= 25) Then
+                        If bolDebug = True Then
+                            file.WriteLine("Running " + stScriptName)
+                        End If
+
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
                     End If
 
@@ -137,9 +169,17 @@ Module Module1
                         'End If
 
                         If iTotalMinutes <= 5 Or iTotalMinutes > 60 Or (tDate > tSendDate) Then
+                            If bolDebug = True Then
+                                file.WriteLine("Running " + stScriptName)
+                            End If
+
                             RunScript(stScriptName, stImportTableName, stExeFilePath)
                         End If
                     Else
+                        If bolDebug = True Then
+                            file.WriteLine("Running " + stScriptName)
+                        End If
+
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
                     End If
                 ElseIf stFrequency = "Every 2 Hours" Then
@@ -155,9 +195,17 @@ Module Module1
                         'End If
 
                         If iTotalMinutes <= 5 Or iTotalMinutes > 120 Or (tDate > tSendDate) Then
+                            If bolDebug = True Then
+                                file.WriteLine("Running " + stScriptName)
+                            End If
+
                             RunScript(stScriptName, stImportTableName, stExeFilePath)
                         End If
                     Else
+                        If bolDebug = True Then
+                            file.WriteLine("Running " + stScriptName)
+                        End If
+
                         RunScript(stScriptName, stImportTableName)
                     End If
                 ElseIf stFrequency = "Every 4 Hours" Then
@@ -173,9 +221,17 @@ Module Module1
                         'End If
 
                         If iTotalMinutes <= 5 Or iTotalMinutes > 240 Or (tDate > tSendDate) Then
+                            If bolDebug = True Then
+                                file.WriteLine("Running " + stScriptName)
+                            End If
+
                             RunScript(stScriptName, stImportTableName, stExeFilePath)
                         End If
                     Else
+                        If bolDebug = True Then
+                            file.WriteLine("Running " + stScriptName)
+                        End If
+
                         RunScript(stScriptName, stImportTableName, stExeFilePath)
                     End If
                 End If
@@ -184,7 +240,14 @@ Module Module1
             'AppendScriptLog("Waiting...", "Waiting")
             con.Close()
             Console.WriteLine("Waiting...")
+
+            If bolDebug = True Then
+                file.WriteLine("Waiting...")
+                file.Close()
+            End If
+
             Thread.Sleep(60 * 1000)
+
         Loop
     End Sub
     Function GetMCMVersion(ByRef stPath As String) As Integer
