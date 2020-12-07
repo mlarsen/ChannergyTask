@@ -136,6 +136,10 @@ Module RunScripts
         stScheduledTime = sqlArray(1)
 
         If stFrequency = "Daily" Then
+            'Code added 10/01/2020: Update the LastRun to be the current date and the scheduled time
+            stSQL = "UPDATE ChannergyScripts SET LastRun=CAST((CAST(CURRENT_DATE AS VARCHAR(10))+' '+Time) AS TIMESTAMP) WHERE ScriptName='" + stScriptName + "';"
+            SQLTextQuery("U", stSQL, stODBCString)
+
             stSQL = "UPDATE ChannergyScripts SET NextScheduled=LastRun+24*3600*1000 WHERE ScriptName='" + stScriptName + "';"
         ElseIf stFrequency = "Hourly" Then
             stSQL = "UPDATE ChannergyScripts SET NextScheduled=LastRun+3600*1000 WHERE ScriptName='" + stScriptName + "';"
