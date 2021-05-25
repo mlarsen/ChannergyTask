@@ -8,8 +8,8 @@ Imports System.Timers
 Imports System.Threading
 
 Module Module1
-    'Public stPath As String = "E:\Core\HeltonTools\2020"
-    Public stPath As String = System.AppDomain.CurrentDomain.BaseDirectory()
+    Public stPath As String = "E:\Core\HeltonTools\2020"
+    'Public stPath As String = System.AppDomain.CurrentDomain.BaseDirectory()
     Public stImportTableName As String
     Public stImportFolderPath As String
     Public stImportFileFilter As String

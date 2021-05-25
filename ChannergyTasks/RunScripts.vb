@@ -26,7 +26,7 @@ Module RunScripts
             My.Computer.FileSystem.CreateDirectory(stProcessFilePath)
         End If
 
-        AppendScriptLog(stScriptName, "Begin", False)
+        AppendScriptLog(stScriptName, "Begin")
         'UpdateDialog(stScriptName + ":Start", frmTestScript.TextBox1)
 
         'Move the files into ProcessFilePath
@@ -66,7 +66,7 @@ Module RunScripts
                     CoreFunctions.SQLTextQuery("U", stSQL, stODBCString, 0)
 
                     If bolIsError = False Then
-                        AppendScriptLog(stScriptName, fi.Name, False)
+                        AppendScriptLog(stScriptName, "Import File", fi.Name)
                         ProcessFile(stScriptName)
 
 
@@ -95,7 +95,8 @@ Module RunScripts
         Dim stCommand As String
 
 
-        AppendScriptLog(stScriptName, "Begin")
+        AppendScriptLog(stScriptName, "Begin Processing")
+
         'Get the SQL from the ScriptEntry table
         stSQL = "SELECT Process FROM ChannergyScripts WHERE ScriptName='" + stScriptName + "';"
         CoreFunctions.SQLTextQuery("S", stSQL, stODBCString, 1)
@@ -103,7 +104,7 @@ Module RunScripts
 
         CoreFunctions.SQLTextQuery("U", stCommand, stODBCString, 0)
 
-        AppendScriptLog(stScriptName, "Complete")
+        AppendScriptLog(stScriptName, "Complete Processing")
     End Sub
     Sub ProcessExe(ByRef stScriptName As String)
         Dim stCommand As String

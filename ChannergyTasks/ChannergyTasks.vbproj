@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BBB6196A-3AD9-41AF-8865-A8E75B08CBB6}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>ChannergyTasks.Module1</StartupObject>
+    <StartupObject>ChannergyTasks.RunSchedule</StartupObject>
     <RootNamespace>ChannergyTasks</RootNamespace>
     <AssemblyName>ChannergyTasks</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -74,7 +74,7 @@
     <Compile Include="ChannergyStartMCM.vb" />
     <Compile Include="ChannergyStopMCM.vb" />
     <Compile Include="CoreFunctions.vb" />
-    <Compile Include="Module1.vb" />
+    <Compile Include="RunSchedule.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

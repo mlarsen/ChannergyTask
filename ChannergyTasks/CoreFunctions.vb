@@ -14,7 +14,7 @@ Module CoreFunctions
     Public sqlArray(10) As String
     Public stFTPUser As String = "update@core-tech.com"
     Public stFTPPass As String = "v0wPZfEYH5291aC&lw8AuU^&HGF"
-    Public stFTPRequestRoot As String = "ftp://ftp.core-tech.com/updates/"
+    Public stFTPRequestRoot As String = "ftp://ftp.channergy.com/updates/"
     Public stApplictionFolder As String
     Sub main()
 
